@@ -158,13 +158,13 @@ def main():
 
     # nn.Tanh optimal values
     alpha_emb_rescon = 0.5
-    alpha_emb_cluster = 0.1
-    alpha_gat_cluster = 2.0  # gat kl qp
+    alpha_emb_cluster = 0.01
+    alpha_gat_cluster = 5.0  # gat kl qp
 
     beta = 0.001
     gamma = 0.0001  # https://github.com/AntixK/PyTorch-VAE/blob/master/models/beta_vae.py#L148
     c_max = 25  # beta-VAE: https://arxiv.org/pdf/1804.03599.pdf
-    lam = 1e-4  # https://github.com/avijit9/Contractive_Autoencoder_in_Pytorch/blob/master/CAE_pytorch.py
+    lam = 1e-5  # https://github.com/avijit9/Contractive_Autoencoder_in_Pytorch/blob/master/CAE_pytorch.py
 
     # embedding = 'vae'
     # model_type = 'vanilla_vae'  # beta = 0.001
