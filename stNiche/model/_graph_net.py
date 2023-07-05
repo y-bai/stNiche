@@ -106,30 +106,48 @@ class GATExt(nn.Module):
 
         self.final_gat_layer = GATv2Conv(n_z, out_channels=dim_out, heads=1)
 
-        self.gate_layers = nn.ModuleList(
+        # update gate
+        self.gate_layers_u = nn.ModuleList(
             [nn.Sequential(
                 nn.Linear(self.dim_hidden[i] * _n_head * 2, self.dim_hidden[i] * _n_head, bias=False),
                 nn.Sigmoid(),
             ) for i in range(len(self.dim_hidden))]
         )
-        self.gate_layers2 = nn.ModuleList(
+
+        # reset gate
+        self.gate_layers_r = nn.ModuleList(
             [nn.Sequential(
                 nn.Linear(self.dim_hidden[i] * _n_head * 2, self.dim_hidden[i] * _n_head, bias=False),
-                # nn.LeakyReLU(negative_slope=0.2),
-                nn.Tanh()
+                nn.Sigmoid(),
             ) for i in range(len(self.dim_hidden))]
         )
 
-        self.gate_layers.append(nn.Sequential(
+        # self.gate_layers2 = nn.ModuleList(
+        #     [nn.Sequential(
+        #         nn.Linear(self.dim_hidden[i] * _n_head * 2, self.dim_hidden[i] * _n_head, bias=False),
+        #         # nn.LeakyReLU(negative_slope=0.2),
+        #         nn.Tanh()
+        #     ) for i in range(len(self.dim_hidden))]
+        # )
+
+        self.gate_layers_comb = nn.ModuleList(
+            [
+                nn.Linear(self.dim_hidden[i] * _n_head * 2, self.dim_hidden[i] * _n_head, bias=False)
+                for i in range(len(self.dim_hidden))
+            ]
+        )
+
+        self.gate_layers_u.append(nn.Sequential(
             nn.Linear(n_z * 2, n_z, bias=False),
             nn.Sigmoid(),
         ))
 
-        self.gate_layers2.append(nn.Sequential(
+        self.gate_layers_r.append(nn.Sequential(
             nn.Linear(n_z * 2, n_z, bias=False),
-            # nn.LeakyReLU(negative_slope=0.2),
-            nn.Tanh()
+            nn.Sigmoid(),
         ))
+
+        self.gate_layers_comb.append(nn.Linear(n_z * 2, n_z, bias=False))
 
     def forward(self, x, adj):
 
@@ -148,9 +166,12 @@ class GATExt(nn.Module):
             if self.ext_emb is not None:
                 if self.gate:
                     temp = torch.cat((h, emd_enc_layers[i]), 1)  # first layer torch.Size([61081, 512])
-                    sigma_gate = self.gate_layers[i](temp)
-                    h_tile = self.gate_layers2[i](temp)
-                    h = h_tile * sigma_gate + h * (1 - sigma_gate)
+                    update_gate = self.gate_layers_u[i](temp)
+                    reset_gate = self.gate_layers_r[i](temp)
+                    h_tilde = F.tanh(self.gate_layers_comb[i](
+                            torch.cat((reset_gate * h, emd_enc_layers[i]), 1)
+                    ))
+                    h = h_tilde * update_gate + h * (1 - update_gate)
                 else:
                     h = h * (1 - self.tau) + emd_enc_layers[i] * self.tau
             h = _gat(h, adj)
@@ -159,10 +180,12 @@ class GATExt(nn.Module):
         if self.ext_emb is not None:
             if self.gate:
                 temp = torch.cat((h, z), 1)  #
-                sigma_gate = self.gate_layers[-1](temp)
-                # h = h + h * sigma_gate
-                h_tile = self.gate_layers2[-1](temp)
-                h = h_tile * sigma_gate + h * (1 - sigma_gate)
+                update_gate = self.gate_layers_u[-1](temp)
+                reset_gate = self.gate_layers_r[-1](temp)
+                h_tilde = F.tanh(self.gate_layers_comb[-1](
+                    torch.cat((reset_gate * h, z), 1)
+                ))
+                h = h_tilde * update_gate + h * (1 - update_gate)
             else:
 
                 h = h * (1 - self.tau) + z * self.tau
