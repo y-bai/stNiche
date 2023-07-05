@@ -151,15 +151,15 @@ def main():
     # alpha_emb_cluster = 0.01
     # alpha_gat_cluster = 5.0  # gat kl qp
 
-    # # nn.Tanh optimal values
+    # # nn.Tanh suboptimal values
     # alpha_emb_rescon = 0.01
     # alpha_emb_cluster = 0.001
     # alpha_gat_cluster = 5.0  # gat kl qp
 
     # nn.Tanh optimal values
-    alpha_emb_rescon = 0.5
-    alpha_emb_cluster = 0.01
-    alpha_gat_cluster = 5.0  # gat kl qp
+    alpha_emb_rescon = 0.01   # 0.1
+    alpha_emb_cluster = 0.001   # 0.01
+    alpha_gat_cluster = 15.0  # gat kl qp
 
     beta = 0.001
     gamma = 0.0001  # https://github.com/AntixK/PyTorch-VAE/blob/master/models/beta_vae.py#L148
