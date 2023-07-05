@@ -28,7 +28,7 @@ class EmbNetTrainer:
 
         """
 
-        pre-training or representation learning used embedding network
+        pre-training or representation learning using embedding network
 
         Parameters
         ----------
