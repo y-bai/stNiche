@@ -20,10 +20,10 @@ from torch_geometric.nn import GATv2Conv
 class GATExt(nn.Module):
 
     def __init__(self, in_features, dim_hidden, n_hiddens=3, n_z=32, dim_out=20, n_head=2,
-                 concat=True, ext_emb=None, embedding='vae', tau=0.001, gate=True):
+                 concat=True, ext_emb=None, embedding='vae', tau=0.001, gate=True, last_g_layer=True):
         """
 
-        GAT model with jointly combination of embedding network
+        GAT embed with jointly combination of embedding network
 
         Parameters
         ----------
@@ -67,6 +67,9 @@ class GATExt(nn.Module):
             and corresponding graph network layer. if `gate = True`, then `tau` will not be used. Default value = True.
         embedding
             Specifying embedding network. Could be `vae` or `ae`. Default value = 'vae'.
+
+        last_g_layer
+            Whether including the last layer (softmax) from graph network, default value = True
         """
 
         super(GATExt, self).__init__()
@@ -75,6 +78,7 @@ class GATExt(nn.Module):
         self.gate = gate
         self.ext_emb = ext_emb
         self.embedding = embedding
+        self.last_g_layer = last_g_layer
 
         if isinstance(dim_hidden, int):
             self.dim_hidden = [dim_hidden] * n_hiddens
@@ -168,7 +172,7 @@ class GATExt(nn.Module):
                     temp = torch.cat((h, emd_enc_layers[i]), 1)  # first layer torch.Size([61081, 512])
                     update_gate = self.gate_layers_u[i](temp)
                     reset_gate = self.gate_layers_r[i](temp)
-                    h_tilde = F.tanh(self.gate_layers_comb[i](
+                    h_tilde = torch.tanh(self.gate_layers_comb[i](
                             torch.cat((reset_gate * h, emd_enc_layers[i]), 1)
                     ))
                     h = h_tilde * update_gate + h * (1 - update_gate)
@@ -182,7 +186,7 @@ class GATExt(nn.Module):
                 temp = torch.cat((h, z), 1)  #
                 update_gate = self.gate_layers_u[-1](temp)
                 reset_gate = self.gate_layers_r[-1](temp)
-                h_tilde = F.tanh(self.gate_layers_comb[-1](
+                h_tilde = torch.tanh(self.gate_layers_comb[-1](
                     torch.cat((reset_gate * h, z), 1)
                 ))
                 h = h_tilde * update_gate + h * (1 - update_gate)
@@ -195,8 +199,9 @@ class GATExt(nn.Module):
         if self.ext_emb is None:
             return h   # hidden representation
         else:
-            h = self.final_gat_layer(h, adj)  # final predict
-            h = F.softmax(h, dim=1)
+            if self.last_g_layer:
+                h = self.final_gat_layer(h, adj)  # final predict
+                h = F.softmax(h, dim=1)
 
             if self.embedding == 'vae':
                 return h, x_rec, z, mu, log_var

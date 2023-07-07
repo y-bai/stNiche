@@ -46,7 +46,7 @@ def vae_loss(x, x_rec, mu, log_var, max_iter, curr_iter, device,
     c_max
         maximum value of controllable value for beta VAE, default value = 25.0
     model_type
-        types of VAE model, which would be: `vanilla_vae` or `beta_vae`
+        types of VAE embed, which would be: `vanilla_vae` or `beta_vae`
 
     Returns
     -------
@@ -82,7 +82,7 @@ def ae_loss(x, x_rec, model_type='vanilla_ae', w=None, h=None, lam=1e-4):
     x_rec
         reconstructed input 2d tensor by VAE, with shape (N_sample, N_feature)
     model_type
-        types of VAE model, which would be: `vanilla_ae` or `contractive_ae`
+        types of VAE embed, which would be: `vanilla_ae` or `contractive_ae`
     w
         weight matrix of z layer(hidden layer) of AE
     h

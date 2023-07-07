@@ -14,6 +14,9 @@
 """
 
 import scanpy as sc
+from typing import Optional, List, Any
+from anndata import AnnData
+from numba import njit
 
 
 def adata_prep(adata,
@@ -97,6 +100,54 @@ def adata_prep(adata,
         sc.pp.scale(adata, max_value=10)
 
     return adata
+
+
+def share_gene_adatas(
+        adatas: List[AnnData],
+        share_genes: Optional[List[str]] = None
+) -> List[AnnData]:
+    """
+
+    Filter genes based on the shared genes among multiple adatas
+
+    Parameters
+    ----------
+    adatas
+        list of AnnData datasets.
+    share_genes
+        optional, list of shared genes
+    Returns
+    -------
+        list of AnnData datasets with shared genes.
+
+    """
+    if share_genes is None:
+        print('shared genes not specified, will using the intersection set of genes among all datasets...')
+        share_genes = _intersection(adatas[0].var_names, adatas[1].var_names)
+        for i_adata in adatas[2:]:
+            share_genes = _intersection(share_genes, i_adata.var_names)
+
+    # filter adata using shared genes
+    s_len = len(share_genes)
+    res_adatas = []
+    for i, adata in enumerate(adatas):
+        g_len = len(_intersection(share_genes, adata.var_names))
+        if g_len != s_len:
+            print('Warning, adata[{0}] has genes that are not in the shared gene list')
+        res_adatas.append(adata[:, share_genes])
+
+    return res_adatas
+
+
+@njit(parallel=True)
+def _intersection(ls1: List[Any], ls2: List[Any]) -> List[Any]:
+    shared = []
+    for ele1 in ls1:
+        for ele2 in ls2:
+            if ele1 == ele2:
+                shared.append(ele1)
+
+    return shared
 
 
 

@@ -185,9 +185,9 @@ def main():
     #################################################################################################
     # embedding pretrain
     if embedding == 'vae':
-        emb_model = stn.model.VAE(in_features, dim_hidden, n_hiddens=n_hiddens, n_z=n_z, n_head=n_head, concat=concat)
+        emb_model = stn.embed.VAE(in_features, dim_hidden, n_hiddens=n_hiddens, n_z=n_z, n_head=n_head, concat=concat)
     if embedding == 'ae':
-        emb_model = stn.model.AE(in_features, dim_hidden, n_hiddens=n_hiddens, n_z=n_z, n_head=n_head, concat=concat)
+        emb_model = stn.embed.AE(in_features, dim_hidden, n_hiddens=n_hiddens, n_z=n_z, n_head=n_head, concat=concat)
     print(emb_model)
     print(emb_model.state_dict().keys())
     # print(emb_model.z_layer[0].weight)
@@ -209,7 +209,7 @@ def main():
 
     #################################################################################################
     # # GRAPH NET
-    # graph_cluster = stn.model.GraphNetCluster(in_features, dim_hidden, n_clusters,
+    # graph_cluster = stn.embed.GraphNetCluster(in_features, dim_hidden, n_clusters,
     #                                           n_hiddens=n_hiddens, n_z=n_z, n_head=n_head, concat=concat)
     # graph_trainer = stn.train.GraphNetClusterTrainer(graph_cluster, y_centers, y_labels, tol=0.000000001,
     #                                                device=device, learning_rate=learning_rate,
@@ -224,7 +224,7 @@ def main():
 
     ##################################################################################################
     # EMB_NET
-    # emb_cluster = stn.model.EmbNetCluster(in_features, dim_hidden, n_clusters, n_hiddens=n_hiddens,
+    # emb_cluster = stn.embed.EmbNetCluster(in_features, dim_hidden, n_clusters, n_hiddens=n_hiddens,
     #                                       n_z=n_z, n_head=n_head, concat=concat,
     #                                       embedding=embedding, pretrain_path=embedding_model_path)
     # # Trainer
@@ -242,7 +242,7 @@ def main():
     #################################################################################################
     # Graph Embedding Net
 
-    graph_emb_model = stn.model.GraphEmbNetCluster(
+    graph_emb_model = stn.tool.GraphEmbNetCluster(
         in_features, dim_hidden, n_clusters, n_hiddens=n_hiddens, n_z=n_z,
         n_head=n_head, concat=concat, tau=0.001, gate=True,
         embedding=embedding, pretrain_path=embedding_model_path)

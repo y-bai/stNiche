@@ -34,7 +34,7 @@ class EmbNetTrainer:
         ----------
 
         model
-            Instance of `VAE` or `AE`, see `model._embed_net.VAE` or `model._embed_net.AE`
+            Instance of `VAE` or `AE`, see `embed._embed_net.VAE` or `embed._embed_net.AE`
         beta
             weight used for vanilla VAE KL loss, default value = 0.001,
             see see `loss._loss.vae_loss`
@@ -46,13 +46,13 @@ class EmbNetTrainer:
             see see `loss._loss.vae_loss`
 
         batch_size
-            batch size during model training, default value = 1024 * 2
+            batch size during embed training, default value = 1024 * 2
         learning_rate
             learning rate, default value = 0.01
         max_epochs
             the maximum number of epochs, default value = 50
         l2_weight
-            weight factor for L2 regularization of model weights, default value = 0.00001
+            weight factor for L2 regularization of embed weights, default value = 0.00001
         lam
             weight factor for contractive loss, default value = 1e-4
 
@@ -64,7 +64,7 @@ class EmbNetTrainer:
                 If `embedding = 'vae'`, then `model_type` could be `vanilla_vae` or `beta_vae`.
                 If `embedding = 'ae'`, then `model_type` could be `vanilla_ae` or `contractive_ae`.
         device
-            device used for the model
+            device used for the embed
         """
         
         self.beta = beta
@@ -154,7 +154,7 @@ class EmbNetTrainer:
         Parameters
         ----------
         path_fname
-            file used for saving the model
+            file used for saving the embed
 
         """
         print('saving embedding net...')

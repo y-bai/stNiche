@@ -17,7 +17,7 @@ import torch.nn as nn
 class VAE(nn.Module):
     def __init__(self, in_features, dim_hidden, n_hiddens=3, n_z=32, n_head=2, concat=True):
         """
-        VAE embedding model
+        VAE embedding embed
 
         Parameters
         ----------
@@ -148,7 +148,7 @@ class AE(nn.Module):
     def __init__(self, in_features, dim_hidden, n_hiddens=3, n_z=32, n_head=2, concat=True):
         """
 
-        AE embedding model
+        AE embedding embed
 
         Parameters
         ----------
