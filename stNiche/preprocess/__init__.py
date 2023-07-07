@@ -11,5 +11,4 @@
 """
 
 from ._normalize import scaler
-from ._filter import adata_prep
-from ._merge import adata_merge
+from ._filter import adata_prep, share_gene_adatas
