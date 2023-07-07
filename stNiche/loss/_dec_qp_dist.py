@@ -5,7 +5,7 @@
 @Author: Yong Bai, yong.bai@hotmail.com
 @Time: 2023/6/30 12:03
 @License: (C) Copyright 2013-2023. 
-@File: _helper.py
+@File: _dec_qp_dist.py
 @Desc:
 
 """
