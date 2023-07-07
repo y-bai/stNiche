@@ -14,9 +14,9 @@
 import torch
 import torch.nn as nn
 
-from ._embed_net import VAE, AE
-from ._graph_net import GATExt
-from ..utils import cal_dec_q
+from ..embed import VAE, AE
+from ..embed import GATExt
+from ..loss import cal_dec_q
 
 
 class GraphEmbNetCluster(nn.Module):
