@@ -12,4 +12,3 @@
 
 from ._embed_net import VAE, AE
 from ._graph_net import GATExt
-from ._cluster_net import GraphEmbNetCluster, EmbNetCluster, GraphNetCluster
