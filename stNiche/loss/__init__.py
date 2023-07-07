@@ -11,3 +11,4 @@
 """
 
 from ._loss import vae_loss, ae_loss, dec_loss
+from ._dec_qp_dist import cal_dec_q, target_dist
