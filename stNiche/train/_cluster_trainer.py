@@ -13,8 +13,8 @@
 import torch
 from torch import optim
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts, CosineAnnealingLR, StepLR
-from ..utils import EmbDataset, target_dist
-from ..loss import vae_loss, ae_loss, dec_loss
+from ..utils import EmbDataset
+from ..loss import vae_loss, ae_loss, dec_loss, target_dist
 
 
 class GraphEmbNetClusterTrainer:
@@ -33,7 +33,7 @@ class GraphEmbNetClusterTrainer:
         Parameters
         ----------
         model
-            Instance of `GraphEmbNetCluster`, see `model._cluster_net.GraphEmbNetCluster`
+            Instance of `GraphEmbNetCluster`, see `embed._cluster_net.GraphEmbNetCluster`
         init_cluster_center
             2d np.array of initial clustering center, with shape (n_clusters, n_z)
         init_cluster_label
@@ -70,13 +70,13 @@ class GraphEmbNetClusterTrainer:
             weight factor for contractive loss, default value = 1e-4
 
         device
-            device used for the model
+            device used for the embed
         learning_rate
             learning rate, default value = 0.01
         max_epochs
             the maximum number of epochs, default value = 50
         l2_weight
-            weight factor for L2 regularization of model weights, default value = 0.00001
+            weight factor for L2 regularization of embed weights, default value = 0.00001
         """
 
         self.alpha1 = alpha_emb_recons
@@ -105,7 +105,7 @@ class GraphEmbNetClusterTrainer:
     def fit(self, data):
         """
 
-        train model
+        train embed
 
         Parameters
         ----------
@@ -159,7 +159,7 @@ class GraphEmbNetClusterTrainer:
 
             loss = self.alpha1 * emb_loss['total_loss'] + self.alpha2 * cluster_emb + self.alpha3 * cluster_gat
             loss.backward()
-            # torch.nn.utils.clip_grad_norm_(parameters=self.model.parameters(), max_norm=0.1, norm_type=2.0)
+            # torch.nn.utils.clip_grad_norm_(parameters=self.embed.parameters(), max_norm=0.1, norm_type=2.0)
             self.optimizer.step()
             print(
                 'Epoch [{}/{}], total Loss: {:.4f}, '
@@ -210,7 +210,7 @@ class GraphEmbNetClusterTrainer:
         Parameters
         ----------
         path_fname
-            file used for saving the model
+            file used for saving the embed
 
         """
         print('saving embedding net...')
@@ -231,7 +231,7 @@ class GraphNetClusterTrainer:
         Parameters
         ----------
         model
-            Instance of `GraphNetCluster`, see `model._cluster_net.GraphNetCluster`
+            Instance of `GraphNetCluster`, see `embed._cluster_net.GraphNetCluster`
         init_cluster_center
             2d np.array of initial clustering center, with shape (n_clusters, n_z)
         init_cluster_label
@@ -241,13 +241,13 @@ class GraphNetClusterTrainer:
             tolerance of difference current updated predicted labels and previous predicted labels. Deprecated.
 
         device
-            device used for the model
+            device used for the embed
         learning_rate
             learning rate, default value = 0.01
         max_epochs
             the maximum number of epochs, default value = 50
         l2_weight
-            weight factor for L2 regularization of model weights, default value = 0.00001
+            weight factor for L2 regularization of embed weights, default value = 0.00001
         """
 
         self.device = device
@@ -263,7 +263,7 @@ class GraphNetClusterTrainer:
     def fit(self, data):
         """
 
-        train model
+        train embed
 
         Parameters
         ----------
@@ -328,7 +328,7 @@ class GraphNetClusterTrainer:
         Parameters
         ----------
         path_fname
-            file used for saving the model
+            file used for saving the embed
 
         """
         print('saving embedding net...')
@@ -353,8 +353,8 @@ class EmbNetClusterTrainer:
         Parameters
         ----------
         model
-            model
-            Instance of `EmbNetCluster`, see `model._cluster_net.EmbNetCluster`
+            embed
+            Instance of `EmbNetCluster`, see `embed._cluster_net.EmbNetCluster`
 
         init_cluster_center
             2d np.array of initial clustering center, with shape (n_clusters, n_z)
@@ -364,7 +364,7 @@ class EmbNetClusterTrainer:
         tol
             tolerance of difference current updated predicted labels and previous predicted labels. Deprecated.
         batch_size
-            batch size during model training, default value = 1024 * 2
+            batch size during embed training, default value = 1024 * 2
 
         embedding
              Specifying embedding network. Could be `vae` or `ae`. Default value = 'vae'.
@@ -391,13 +391,13 @@ class EmbNetClusterTrainer:
             weight factor for contractive loss, default value = 1e-4
 
         device
-            device used for the model
+            device used for the embed
         learning_rate
             learning rate, default value = 0.01
         max_epochs
             the maximum number of epochs, default value = 50
         l2_weight
-            weight factor for L2 regularization of model weights, default value = 0.00001
+            weight factor for L2 regularization of embed weights, default value = 0.00001
 
         """
         self.alpha = alpha
@@ -521,7 +521,7 @@ class EmbNetClusterTrainer:
         Parameters
         ----------
         path_fname
-            file used for saving the model
+            file used for saving the embed
 
         """
         print('saving embedding net...')
