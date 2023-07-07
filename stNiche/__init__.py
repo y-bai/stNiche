@@ -14,5 +14,6 @@ from . import utils
 from . import preprocess as pp
 
 from . import feature
-from . import model
+from . import tool
+from . import embed
 from . import train
