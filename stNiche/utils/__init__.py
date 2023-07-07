@@ -14,4 +14,3 @@ from ._coor_distance import euclidean_distance, gauss_similarity
 from ._graph import crt_graph
 from ._clustering import Cluster
 from ._dataset import EmbDataset
-from ._helper import cal_dec_q, target_dist
