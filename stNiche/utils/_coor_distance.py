@@ -15,7 +15,7 @@ from numba import njit, prange
 
 
 @njit(parallel=True)
-def euclidean_distance(x):
+def coor_eucl_dist(x):
     """
     calculate pairwise euclidean distance between spots based on coordinates
 
@@ -42,7 +42,7 @@ def euclidean_distance(x):
     return ret_distance
 
 
-def gauss_similarity(x, sigma=1):
+def coor_gauss_similarity(x, sigma=1):
     """
     calculate Gaussian kernel for similarity (based on coordinate distance).
 
@@ -58,5 +58,5 @@ def gauss_similarity(x, sigma=1):
     Similarity between spots based on distance measure.
     """
 
-    y = euclidean_distance(x)
+    y = coor_eucl_dist(x)
     return np.exp(-(y ** 2 / (2 * sigma)))
