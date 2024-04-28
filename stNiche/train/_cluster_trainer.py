@@ -213,7 +213,7 @@ class GraphEmbNetClusterTrainer:
             file used for saving the embed
 
         """
-        print('saving embedding net...')
+        print('saving graph emb net...')
         torch.save(self.model.state_dict(), path_fname)
 
 
