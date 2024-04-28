@@ -13,7 +13,6 @@
 
 import numpy as np
 from sklearn.cluster import MiniBatchKMeans, SpectralClustering, SpectralBiclustering
-import torch
 
 
 class Cluster:
