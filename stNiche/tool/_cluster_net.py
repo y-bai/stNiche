@@ -81,12 +81,18 @@ class GraphEmbNetCluster(nn.Module):
         if self.embedding == 'vae':
             self.emb_net = VAE(in_features, dim_hidden, n_hiddens=n_hiddens, n_z=n_z, n_head=n_head,
                                concat=concat)
-            self.emb_net.load_state_dict(torch.load(pretrain_path))
+            if pretrain_path is None:
+                print('warning: pretrain_path not specify')
+            else:
+                self.emb_net.load_state_dict(torch.load(pretrain_path))
 
         if self.embedding == 'ae':
             self.emb_net = AE(in_features, dim_hidden, n_hiddens=n_hiddens, n_z=n_z, n_head=n_head,
                               concat=concat)
-            self.emb_net.load_state_dict(torch.load(pretrain_path))
+            if pretrain_path is None:
+                print('warning: pretrain_path not specify')
+            else:
+                self.emb_net.load_state_dict(torch.load(pretrain_path))
 
         assert self.emb_net, "embedding network is not specified, try embedding='vae'"
         self.graph_net = GATExt(in_features, dim_hidden, n_hiddens=n_hiddens, n_z=n_z,
@@ -106,11 +112,13 @@ class GraphEmbNetCluster(nn.Module):
         if self.embedding == 'vae':
             gat_h, emb_recons, emb_z, mu, log_var = self.graph_net(x, adj)
             q = cal_dec_q(emb_z, self.cluster_layer, self.v)
+            # q = cal_dec_q(gat_h, self.cluster_layer, self.v)
             return gat_h, emb_recons, emb_z, q, mu, log_var
 
         if self.embedding == 'ae':
             gat_h, emb_recons, emb_z = self.graph_net(x, adj)
             q = cal_dec_q(emb_z, self.cluster_layer, self.v)
+            # q = cal_dec_q(gat_h, self.cluster_layer, self.v)
             return gat_h, emb_recons, emb_z, q
 
 
