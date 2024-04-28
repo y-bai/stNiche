@@ -19,18 +19,17 @@ def cal_dec_q(z, cluster, v):
 
     Parameters
     ----------
-    z
-    cluster
+    z: shape: (n_sample, n_z), n_z: dim in latent space
+    cluster: (n_cluster, n_z)
     v
 
     Returns
     -------
-
+    q: shape: (n_sample, n_cluster)
     """
     q = 1.0 / ((1.0 + torch.sum(torch.pow(z.unsqueeze(1) - cluster, 2), 2) / v) + 1e-8)
     q = q.pow((v + 1.0) / 2.0)
     q = (q.t() / torch.sum(q, 1)).t()
-
     return q
 
 
