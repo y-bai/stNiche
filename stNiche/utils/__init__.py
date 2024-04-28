@@ -10,8 +10,6 @@
 
 """
 
-from ._coor_distance import coor_eucl_dist, coor_gauss_similarity
-from ._sample_distance import sample_encl_dist, sample_spearman_dist
 from ._graph import crt_graph
 from ._clustering import Cluster
 from ._dataset import EmbDataset
