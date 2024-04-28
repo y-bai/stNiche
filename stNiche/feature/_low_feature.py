@@ -18,14 +18,24 @@ from sklearn.decomposition import KernelPCA, PCA, DictionaryLearning, NMF
 from sklearn.neighbors import NeighborhoodComponentsAnalysis
 from sklearn.manifold import Isomap, MDS, TSNE
 
+from sklearn.metrics.pairwise import manhattan_distances, euclidean_distances, cosine_distances
 
-def low_embedding(x, *, n_comp=20,
-                  embedding='pca',
-                  kpca_kernel='rbf', kpca_gamma=2,
-                  dictl_trans_alpha=0.1,
-                  isomap_n_neigh=8,
-                  tsne_perplexity=30.0,
-                  seed=42):
+from typing import Literal
+
+
+MTD = Literal['pca', 'kpca', 'dictl', 'nmf', 'nca', 'isomap', 'tsne', 'mds']
+
+
+def low_embedding(x, *,
+                  n_comp: int = 20,
+                  embedding: MTD = 'pca',
+                  kpca_kernel: str = 'rbf',
+                  kpca_gamma: float = 1.0,
+                  dictl_trans_alpha: float = 0.1,
+                  isomap_n_neigh: int = 8,
+                  tsne_perplexity: float = 30.0,
+                  seed: int = 42,
+                  distance='manhattan_distances'):
     """
     feature reduction using classic methods
 
@@ -78,6 +88,7 @@ def low_embedding(x, *, n_comp=20,
         emb_trans = TSNE(n_components=n_comp, perplexity=tsne_perplexity, metric='euclidean',
                          n_jobs=-1, random_state=seed)
     if embedding == 'mds':
+
         emb_trans = MDS(n_components=n_comp, n_init=1, n_jobs=-1, random_state=seed, normalized_stress="auto")
 
     assert emb_trans is not None, 'feature reduction failed'
